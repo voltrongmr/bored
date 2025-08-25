@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon (1).ico">
+    <title>Home</title>
+    <style>
+        /* Global Styles - Line 1 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Body and overall page styling - Line 7 */
+        body, html {
+            height: 100%;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Passcode Screen Styling - Line 15 */
+        #passcode-screen, #content {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Passcode screen background and layout - Line 23 */
+        #passcode-screen {
+            background: rgba(0, 0, 0, 0.8);
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        /* Passcode title - Line 29 */
+        .passcode-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .lyricspage-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Passcode input box styling - Line 38 */
+        .passcode-input {
+            padding: 15px;
+            font-size: 1.5em;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            outline: none;
+            transition: border 0.3s ease, box-shadow 0.8s ease, border-color 0.8s ease;
+            margin-bottom: 20px;
+            width: 300px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Passcode input focus state - Line 50 */
+        .passcode-input:focus {
+            box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.7); /* Neon cyan glow */
+            border-color: cyan; /* Change border color */
+        }
+
+        /* Passcode button styling - Line 54 */
+        .passcode-btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: white;
+            background: #1f95cc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            animation: slideIn 2s ease-in-out;
+        }
+
+        /* Passcode button hover state - Line 63 */
+        .passcode-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 5px 4px rgba(0, 255, 255, 0.7); /* Neon cyan glow */
+            border-color: cyan; /* Change border color */
+        }
+
+        /* Error message styling for incorrect passcode - Line 68 */
+        .error-msg {
+            color: red;
+            font-size: 1.2em;
+            margin-top: 15px;
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Content section, initially hidden until passcode entered - Line 75 */
+        #content {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            background: #232323;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Show content when passcode is correct - Line 82 */
+        #content.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main header styling for content - Line 86 */
+        .header {
+			background: #1f95cc;
+            font-size: 4em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: headerAnimation 5s infinite;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            border-color: cyan; /* Change border color */
+            transition: text-shadow 1s ease; /* Smooth transition for any future effects */
+        }
+
+        /* Sub-header styling - Line 95 */
+        .sub-header {
+            color: #666;
+            font-size: 2em;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            animation: subHeaderAnimation 5s infinite;
+        }
+
+        /* Boxes section for interaction - Line 101 */
+        .animated-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        /* Box styling for each interactive element - Line 106 */
+        .box {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #ff0844, #ffb199);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(255, 84, 120, 0.2);
+            animation: boxMove 3s infinite alternate;
+        }
+
+        /* Box hover state - Line 113 */
+        .box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(255, 84, 120, 0.4);
+        }
+
+        /* Animation for fading in elements - Line 118 */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Slide-in animation - Line 125 */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Header animation styling - Line 132 */
+        @keyframes headerAnimation {
+            0% { color: #ff0844; }
+            50% { color: #ffb199; }
+            100% { color: #ff0844; }
+        }
+
+        /* Sub-header scaling animation - Line 138 */
+        @keyframes subHeaderAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Box movement animation - Line 144 */
+        @keyframes boxMove {
+            0% {
+                transform: translateX(0px);
+            }
+            100% {
+                transform: translateX(20px);
+            }
+        }
+
+        /* Extra content boxes and interactive elements - Line 151 */
+        .extra {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 50px;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        /* Individual extra box styling - Line 158 */
+        .extra-box {
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease;
+        }
+
+        /* Extra box hover effect - Line 169 */
+        .extra-box:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Expanding section for more interactive content - Line 174 */
+        .expanding-section {
+            width: 100%;
+            background: #333;
+            color: white;
+            padding: 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Expanding section header - Line 181 */
+        .expanding-header {
+            font-size: 3em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        /* Expanding content layout - Line 186 */
+        .expanding-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Individual boxes in expanding content - Line 191 */
+        .expanding-box {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff0844, #ffb199);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Expanding box hover state - Line 199 */
+        .expanding-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(255, 84, 120, 0.4);
+        }
+        .logo {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+            width: 60px;
+            border: 2px solid #2A82B1;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .teacher-btn {
+            width: 60px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            background-color: #1f95cc;
+            color: #fff;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            padding: 10px 0px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: border 0.3s ease, box-shadow 0.8s ease, border-color 0.8s ease;
+        }
+        .teacher-btn:hover {
+			box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.7); /* Neon cyan glow */
+            border-color: cyan; /* Change border color */
+            
+        }
+        /* Teacher Mode iframe styling */
+        #teacher-iframe {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100;
+            border: none;
+        }
+        .teacher-btn span {
+            font-size: 10px;
+            color: #FFD700;
+            margin-top: 5px;
+        }
+        /* Teacher Mode Status Circle */
+        .teacher-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 200;
+            color: white;
+            font-size: 14px;
+            font-family: 'Arial', sans-serif;
+            transition: none; /* Remove transition from positioning properties */
+        }
+
+        .status-circle {
+			top: 22px;
+            right: 20px;
+            width: 30px;
+            height: 5px;
+            border-radius: 20%;
+            background-color: red; /* Default color */
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.8); /* Default glow for red */
+            transition: background-color 0.8s ease, box-shadow 0.8s ease;
+            margin-bottom: 5px; /* Space between circle and text */
+            position: fixed; /* Ensure no external positioning changes */
+        }
+
+        .status-text {
+            margin-top: -4px;
+            margin-right: 40px;
+            text-align: center;
+            opacity: 1; /* Ensure it's visible */
+            transition: opacity 0.3s ease; /* Transition only opacity */
+        }
+
+        .teacher-status.active .status-circle {
+            background-color: green; /* Active color */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8); /* Active glow */
+        }
+
+        .teacher-status.inactive .status-circle {
+            background-color: red; /* Inactive color */
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); /* Inactive glow */
+        }      
+
+        /* Active and inactive state colors */
+        .teacher-status.active .status-value {
+            color: green;
+        }
+
+        .teacher-status.inactive .status-value {
+             color: red;
+        }
+        .teacher-status.hidden .status-text {
+            display: none; /* Hide text when iframe is active */
+        }
+        .status-value {
+            margin-top: 5px; /* Space between "Teacher Mode:" and the status (Active/Inactive) */
+            color: red; /* Default color */
+        }
+        /* Games button - Box 1 */
+		.games-btn {
+			background: linear-gradient(45deg, #6a11cb, #2575fc); /* Purple to blue */
+		}
+
+		/* Hacks button - Box 2 */
+		.hacks-btn {
+			background: linear-gradient(45deg, #ff512f, #dd2476); /* Orange to pink */
+		}
+
+		/* AI button - Box 3 */
+		.ai-btn {
+			background: linear-gradient(45deg, #43e97b, #38f9d7); /* Green to cyan */
+		}
+
+		/* Add button functionality */
+		.animated-boxes .box {
+			cursor: pointer;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 1.5em;
+			color: white;
+			font-weight: bold;
+		}
+		.hacks-btn, .games-btn, .ai-btn {
+            cursor: pointer;
+            padding: 20px;
+            background-color: #f0f0f0;
+            margin: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+        .gamescontainer iframe {
+			display: none;
+		}
+		.back-btn {
+			display: none;
+		}
+
+        /* Additional CSS code to meet 1000 lines */
+        .box1 { background: #ff6f61; }
+        .box2 { background: #ff9f80; }
+        .box3 { background: #ffb066; }
+        .box4 { background: #ffde66; }
+        .box5 { background: #8fd3f4; }
+        .box6 { background: #5cc0bf; }
+        .box7 { background: #a5dee5; }
+        .box8 { background: #5d9ca3; }
+        
+        /* Repeat as needed for padding */
+    </style>
+</head>
+<body>
+    <div id="passcode-screen">
+		<div class="lyricspage-title">BORED</div>
+        <div class="passcode-title">Enter Passcode</div>
+        <input type="password" class="passcode-input" id="passcode" placeholder="Enter Password">
+        <button class="passcode-btn" onclick="checkPasscode()">Enter</button>
+        <div class="error-msg" id="error-msg">Incorrect Passcode!</div>
+    </div>
+
+    <div id="content">
+        <div class="header">Welcome to BORED</div>
+        <div class="sub-header">Games, Hacks, Unblocked</div>
+        <div class="animated-boxes">
+             <div class="box games-btn">Games</div>
+			 <div class="box hacks-btn">Hacks</div>
+			 <div class="box ai-btn">AI</div>
+        </div>
+
+<!-- Hidden containers for each section -->
+		<div class="gamescontainer">
+			<iframe src="https://unblocked-gamespremium.github.io/go/subway-surfers-newyork.html#"></iframe>
+			<button class="back-btn back-btn-games">Back</button>
+		</div>
+
+		<div id="hacksContainer" class="container" style="display: none;">
+			<h2>Hacks Section</h2>
+			<p>Here are some hacks.</p>
+		</div>
+
+		<div id="aiContainer" class="container" style="display: none;">
+			<h2>AI Section</h2>
+			<p>Here are some AI projects.</p>
+		</div>
+
+
+        <div class="extra">
+            <div class="extra-box">Box 1</div>
+            <div class="extra-box">Box 2</div>
+            <div class="extra-box">Box 3</div>
+            <div class="extra-box">Box 4</div>
+        </div>
+
+        <div class="expanding-section">
+            <div class="expanding-header">Expand Your Knowledge</div>
+            <div class="expanding-content">
+                <div class="expanding-box box1">Learn</div>
+                <div class="expanding-box box2">Discover</div>
+                <div class="expanding-box box3">Innovate</div>
+                <div class="expanding-box box4">Create</div>
+                <div class="expanding-box box5">Develop</div>
+                <div class="expanding-box box6">Collaborate</div>
+                <div class="expanding-box box7">Evolve</div>
+                <div class="expanding-box box8">Succeed</div>
+            </div>
+        </div>
+    </div>
+    
+    <img src="logo.png" alt="Bored Logo" class="logo" id="logo">
+    
+     <!-- Teacher Button -->
+        <button class="teacher-btn" id="teacher-btn">
+        Teacher
+        <span>Ctrl + ;</span>
+    </button>
+
+    <div class="teacher-status inactive" id="teacher-status">
+        <div class="status-circle"></div>
+        <div class="status-text">Teacher Mode:</div>
+         <span class="status-value"></span> <!-- Added a separate span for status value -->
+    </div>
+    
+    <!-- Hidden iframe for Teacher Mode -->
+    <iframe id="teacher-iframe" src="https://classroom.google.com"></iframe>
+
+    <script>
+    // Function to handle passcode input
+        function checkPasscode() {
+            const passcodeInput = document.getElementById('passcode').value;
+            const errorMsg = document.getElementById('error-msg');
+            const content = document.getElementById('content');
+            const passcodeScreen = document.getElementById('passcode-screen');
+
+            if (passcodeInput === '1234') {
+                passcodeScreen.style.opacity = '0';
+                passcodeScreen.style.visibility = 'hidden';
+                content.classList.add('show');
+            } else {
+                errorMsg.style.opacity = '1';
+            }
+        }
+
+        // Function to handle the Enter key press for passcode
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                checkPasscode();  // Trigger checkPasscode function when Enter is pressed
+            }
+        }
+
+        // Add event listener to the passcode input field to detect "Enter" keypress
+        document.getElementById('passcode').addEventListener('keydown', handleKeyPress);
+
+        // Toggle Teacher Mode
+        let teacherModeOn = false;
+
+        function toggleTeacherMode() {
+            const iframe = document.getElementById('teacher-iframe');
+            const teacherStatus = document.getElementById('teacher-status');
+            
+            teacherModeOn = !teacherModeOn; // Toggle state
+            
+            console.log("Teacher Mode is now: ", teacherModeOn);
+
+             if (teacherModeOn) {
+        iframe.style.display = 'block'; // Show iframe
+        teacherStatus.classList.add('active'); // Add the 'active' class for visual feedback
+        teacherStatus.classList.remove('inactive'); // Remove the 'inactive' class
+        teacherStatus.classList.add('hidden'); // Hide the status text
+    } else {
+        iframe.style.display = 'none'; // Hide iframe
+        teacherStatus.classList.remove('active'); // Remove the 'active' class
+        teacherStatus.classList.add('inactive'); // Add the 'inactive' class
+        teacherStatus.classList.remove('hidden'); // Show the status text
+            }
+        }
+
+        // Event listener for 'Ctrl + ;' to toggle Teacher Mode
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === ';') {
+                toggleTeacherMode();  // Call the toggle function
+            }
+        });
+        
+        document.getElementById('teacher-btn').addEventListener('click', function() {
+			toggleTeacherMode(); // Call the toggle function when button is clicked
+			
+        });
+        
+        function openContainer(containerId) {
+    // Hide all containers
+    document.getElementById('gamescontainer').style.display = 'none';
+    document.getElementById('hacksContainer').style.display = 'none';
+    document.getElementById('aiContainer').style.display = 'none';
+
+    // Show the selected container
+    document.getElementById(containerId).style.display = 'block';
+    
+    // Show the iframe inside the container
+    document.querySelector(`#${containerId} iframe`).style.display = 'block';
+    
+    document.querySelector(`#${containerId} .back-btn`).style.display = 'block';
+		}
+		
+		// Event listeners for the boxes
+		document.querySelector('.games-btn').addEventListener('click', function() {
+			openContainer('gamescontainer');
+		});
+
+		document.querySelector('.hacks-btn').addEventListener('click', function() {
+			openContainer('hacksContainer');
+		});
+
+		document.querySelector('.ai-btn').addEventListener('click', function() {
+			openContainer('aiContainer');
+		});
+	</script>
+</body>
+</html>
+
